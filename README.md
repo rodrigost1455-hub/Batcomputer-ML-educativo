@@ -2,7 +2,7 @@
 
 An interactive, single-page web experience that teaches the full machine learning workflow through the lens of a real-world industrial classification problem. Built to make ML concepts accessible to non-technical audiences while preserving technical accuracy.
 
-**Live demo:** _[add your deployment URL here]_
+**Live demo:** https://batcomputer-ml-educativo.vercel.app/
 
 ---
 

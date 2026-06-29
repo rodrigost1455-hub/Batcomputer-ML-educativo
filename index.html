@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Oswald:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:#0a0a0f;color:#e6e6e6;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  ::selection{background:#FFD400;color:#0a0a0f;}
+  @keyframes batglow{0%{opacity:0;transform:scale(.55);}60%{opacity:.6;}100%{opacity:.5;transform:scale(1);}}
+  @keyframes flicker{0%,100%{opacity:.5;}45%{opacity:.5;}47%{opacity:.78;}49%{opacity:.42;}51%{opacity:.72;}55%{opacity:.5;}}
+  @keyframes rise{0%{opacity:0;transform:translateY(34px);}100%{opacity:1;transform:none;}}
+  @keyframes rain{0%{background-position:0 0;}100%{background-position:0 1200px;}}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(9px);}}
+  @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(245,197,24,.32);}70%{box-shadow:0 0 0 16px rgba(245,197,24,0);}100%{box-shadow:0 0 0 0 rgba(245,197,24,0);}}
+</style>
+</helmet>
+
+<div style="position:relative;width:100%;background:#0a0a0f;">
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="400" fill="#0a0a0f"/>
+    <rect width="400" height="400" fill="url(#g)"/>
+    <defs><radialGradient id="g" cx="50%" cy="42%" r="55%"><stop offset="0%" stop-color="#1a2140"/><stop offset="100%" stop-color="#0a0a0f"/></radialGradient></defs>
+    <ellipse cx="200" cy="180" rx="116" ry="56" fill="#FFD400"/>
+    <polygon fill="#0a0a0f" transform="translate(80,118)" points="12,54 46,46 42,34 60,46 80,44 92,48 98,22 106,48 114,42 120,48 126,42 134,48 142,22 148,48 160,44 180,46 198,34 194,46 228,54 200,66 214,90 178,72 190,96 152,76 142,102 130,74 120,86 110,74 98,102 88,76 50,96 62,72 26,90 40,66"/>
+    <text x="200" y="300" text-anchor="middle" font-family="Oswald, sans-serif" font-size="34" font-weight="700" letter-spacing="3" fill="#FFD400">BATCOMPUTER</text>
+    <text x="200" y="332" text-anchor="middle" font-family="Oswald, sans-serif" font-size="22" letter-spacing="8" fill="#8b92a8">ML</text>
+  </svg>
+</template>
+
+<sc-if value="{{ showRain }}" hint-placeholder-val="{{ true }}">
+<div aria-hidden="true" style="position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;background-image:repeating-linear-gradient(101deg, transparent 0 7px, rgba(220,230,255,.9) 7px 8px);background-size:auto 1200px;animation:rain 7s linear infinite;mix-blend-mode:screen;"></div>
+</sc-if>
+<div aria-hidden="true" style="position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%, rgba(15,23,41,.85), transparent 60%), radial-gradient(100% 60% at 50% 110%, rgba(10,12,24,.9), transparent 55%);"></div>
+
+<!-- ===== SIDE NAV ===== -->
+<nav style="position:fixed;top:50%;right:clamp(10px,2vw,26px);transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:18px;">
+  <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="7">
+    <a href="{{ nav.href }}" title="{{ nav.label }}" style="text-decoration:none;display:flex;align-items:center;justify-content:flex-end;gap:10px;group:1;">
+      <span data-navlabel="" style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8b92a8;opacity:0;transform:translateX(6px);transition:opacity .25s ease,transform .25s ease;white-space:nowrap;">{{ nav.label }}</span>
+      <span data-navdot="" style="width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.18);transition:all .3s ease;flex:none;"></span>
+    </a>
+  </sc-for>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section id="hero" data-chapter="" data-screen-label="Hero" style="position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px clamp(20px,6vw,80px);">
+  <div aria-hidden="true" style="position:absolute;top:32%;left:50%;transform:translate(-50%,-50%);width:min(120vw,1100px);height:760px;background:radial-gradient(closest-side, rgba(245,197,24,.16), rgba(245,197,24,.05) 45%, transparent 72%);filter:blur(6px);animation:batglow 1.8s cubic-bezier(.2,.7,.2,1) forwards;pointer-events:none;"></div>
+
+  <div style="position:relative;animation:batglow 1.5s ease forwards;margin-bottom:30px;">
+    <div style="animation:bob 6s ease-in-out infinite 1.8s;">
+      <svg width="138" height="92" viewBox="0 0 240 124" style="filter:drop-shadow(0 0 28px rgba(245,197,24,.5));display:block;">
+        <ellipse cx="120" cy="62" rx="116" ry="56" fill="#FFD400"></ellipse>
+        <polygon fill="#0a0a0f" points="12,54 46,46 42,34 60,46 80,44 92,48 98,22 106,48 114,42 120,48 126,42 134,48 142,22 148,48 160,44 180,46 198,34 194,46 228,54 200,66 214,90 178,72 190,96 152,76 142,102 130,74 120,86 110,74 98,102 88,76 50,96 62,72 26,90 40,66"></polygon>
+      </svg>
+    </div>
+  </div>
+
+  <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:#FFD400;margin-bottom:22px;animation:rise .8s ease .3s both;">// Sistema Batcomputer · en línea</div>
+  <h1 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(44px,8.5vw,128px);line-height:.92;letter-spacing:.01em;margin:0 0 26px;color:#f4f5f8;max-width:14ch;text-shadow:0 0 40px rgba(245,197,24,.18);animation:rise .9s ease .42s both;">El Batcomputer te enseña <span style="color:#FFD400;">Machine Learning</span></h1>
+  <p style="font-size:clamp(15px,1.9vw,21px);line-height:1.6;color:#a7afc4;max-width:54ch;margin:0 0 40px;animation:rise .9s ease .56s both;">Caso real: <strong style="color:#e6e6e6;">462 sensores sospechosos.</strong> 142 son villanos encubiertos. Aprende a atraparlos — sin saber programar.</p>
+  <a href="#ch1" style="animation:pulseRing 2.6s ease 1.4s infinite, rise .9s ease .7s both;display:inline-flex;align-items:center;gap:12px;font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#0a0a0f;background:#FFD400;padding:16px 30px;border-radius:40px;text-decoration:none;transition:transform .25s ease,box-shadow .25s ease;" style-hover="transform:translateY(-3px);box-shadow:0 12px 34px rgba(245,197,24,.4);">Iniciar investigación <span style="font-size:18px;">↓</span></a>
+
+  <div style="position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#5b6478;animation:bob 2.6s ease-in-out infinite;">desplázate</div>
+</section>
+
+<!-- ===== CH1 ===== -->
+<section id="ch1" data-chapter="" data-screen-label="Cap 1 · Los datos" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;position:relative;">
+      <div style="position:absolute;left:-4%;top:-40px;width:440px;height:300px;background:radial-gradient(closest-side, rgba(245,197,24,.1), transparent 70%);pointer-events:none;"></div>
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;position:relative;">Capítulo 01</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;position:relative;">El archivo del caso</h2>
+      <p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:62ch;margin:0;position:relative;">Antes de perseguir a nadie, Batman abre el <strong style="color:#e6e6e6;">archivo del caso</strong>. En Machine Learning ese archivo es el <strong style="color:#FFD400;">dataset</strong>: una tabla donde cada fila es un sospechoso y cada columna una pista que recogimos sobre él.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;margin:48px 0 40px;">
+      <sc-for list="{{ statCards }}" as="stat" hint-placeholder-count="4">
+        <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.55);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:24px 22px;backdrop-filter:blur(4px);transition:opacity .7s ease,transform .7s ease,box-shadow .3s ease,border-color .3s ease;" style-hover="box-shadow:0 0 30px rgba(245,197,24,.16);border-color:rgba(245,197,24,.35);">
+          <div data-reveal="" data-count="{{ stat.value }}" style="opacity:0;transition:opacity .7s ease;font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,5.5vw,66px);line-height:1;color:{{ stat.color }};">0</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8b92a8;margin-top:8px;">{{ stat.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ showCode }}" hint-placeholder-val="{{ true }}">
+    <div data-reveal="" data-codeblock="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;max-width:780px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);">
+        <span style="width:11px;height:11px;border-radius:50%;background:#E5484D;"></span>
+        <span style="width:11px;height:11px;border-radius:50%;background:#FFD400;"></span>
+        <span style="width:11px;height:11px;border-radius:50%;background:#3ECF8E;"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5b6478;margin-left:6px;">expediente_gotham.py</span>
+        <button onClick="{{ handleCopy }}" style="margin-left:auto;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:6px 12px;cursor:pointer;transition:all .2s ease;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+      </div>
+      <pre style="margin:0;padding:20px 18px;overflow-x:auto;"><code style="font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.75;color:#cdd6e4;white-space:pre;"><span style="color:#FFD400;">import</span> pandas <span style="color:#FFD400;">as</span> pd
+
+<span style="color:#5b6478;font-style:italic;"># Abrir el archivo del caso del Batcomputer</span>
+df = pd.<span style="color:#9bb4d4;">read_csv</span>(<span style="color:#7ee787;">"expediente_gotham.csv"</span>)
+
+<span style="color:#9bb4d4;">print</span>(df.shape)        <span style="color:#5b6478;font-style:italic;"># (462, 17)</span>
+<span style="color:#9bb4d4;">print</span>(df.villano.<span style="color:#9bb4d4;">value_counts</span>())
+<span style="color:#5b6478;font-style:italic;"># 0 -&gt; 320 inocentes</span>
+<span style="color:#5b6478;font-style:italic;"># 1 -&gt; 142 villanos</span></code></pre>
+    </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- ===== CH2 ===== -->
+<section id="ch2" data-chapter="" data-screen-label="Cap 2 · EDA" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);background:linear-gradient(180deg, transparent, rgba(15,23,41,.45) 50%, transparent);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;">Capítulo 02</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;">Estudiar la escena</h2>
+      <p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:62ch;margin:0;">Batman nunca acusa sin estudiar la escena. El <strong style="color:#FFD400;">análisis exploratorio (EDA)</strong> es mirar los datos antes de modelar: ¿qué pista separa mejor a un villano de un inocente?</p>
+    </div>
+
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:clamp(20px,3vw,34px);margin:42px 0 34px;backdrop-filter:blur(4px);">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:8px;">
+        <span style="font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#e6e6e6;">DISTRIBUCIÓN DEL «MARGEN»</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5b6478;">plt.hist( ... )</span>
+      </div>
+      <div style="position:relative;height:170px;display:flex;align-items:flex-end;gap:clamp(3px,1vw,9px);padding:0 4px;border-bottom:1px solid rgba(255,255,255,.12);">
+        <sc-for list="{{ histBars }}" as="bin" hint-placeholder-count="16">
+          <div style="flex:1;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:100%;">
+            <div style="width:46%;height:{{ bin.gPx }};background:linear-gradient(180deg,#3ECF8E,#1f8a5b);border-radius:3px 3px 0 0;opacity:.85;"></div>
+            <div style="width:46%;height:{{ bin.vPx }};background:linear-gradient(180deg,#E5484D,#a51c20);border-radius:3px 3px 0 0;opacity:.85;"></div>
+          </div>
+        </sc-for>
+        <div style="position:absolute;top:-6px;bottom:0;left:51%;width:0;border-left:2px dashed #FFD400;"></div>
+        <div style="position:absolute;top:-22px;left:51%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:#FFD400;white-space:nowrap;">umbral</div>
+      </div>
+      <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;">
+        <span style="display:flex;align-items:center;gap:8px;"><span style="width:12px;height:12px;border-radius:3px;background:#3ECF8E;"></span>Inocentes</span>
+        <span style="display:flex;align-items:center;gap:8px;"><span style="width:12px;height:12px;border-radius:3px;background:#E5484D;"></span>Villanos</span>
+        <span style="margin-left:auto;color:#5b6478;">→ Margen Ford (mm)</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:34px;">
+      <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:24px;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.35);box-shadow:0 0 30px rgba(245,197,24,.14);">
+        <div style="font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#FFD400;margin-bottom:10px;">Boxplot · cazar outliers</div>
+        <p style="font-size:14.5px;line-height:1.65;color:#a7afc4;margin:0;">Un valor extremo, lejísimos del resto: <strong style="color:#e6e6e6;">el Joker del lote</strong>. El boxplot lo señala al instante para decidir si es un error o una pista real.</p>
+      </div>
+      <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:24px;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.35);box-shadow:0 0 30px rgba(245,197,24,.14);">
+        <div style="font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#FFD400;margin-bottom:10px;">Matriz de correlación · el tablero</div>
+        <p style="font-size:14.5px;line-height:1.65;color:#a7afc4;margin:0;">El <strong style="color:#e6e6e6;">tablero de conexiones</strong> con hilos rojos: muestra qué pistas se mueven juntas, para no confiar dos veces en la misma evidencia disfrazada.</p>
+      </div>
+    </div>
+
+    <sc-if value="{{ showCode }}" hint-placeholder-val="{{ true }}">
+    <div data-reveal="" data-codeblock="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;max-width:780px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);">
+        <span style="width:11px;height:11px;border-radius:50%;background:#E5484D;"></span><span style="width:11px;height:11px;border-radius:50%;background:#FFD400;"></span><span style="width:11px;height:11px;border-radius:50%;background:#3ECF8E;"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5b6478;margin-left:6px;">eda_escena.py</span>
+        <button onClick="{{ handleCopy }}" style="margin-left:auto;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:6px 12px;cursor:pointer;transition:all .2s ease;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+      </div>
+      <pre style="margin:0;padding:20px 18px;overflow-x:auto;"><code style="font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.75;color:#cdd6e4;white-space:pre;"><span style="color:#FFD400;">import</span> matplotlib.pyplot <span style="color:#FFD400;">as</span> plt
+
+<span style="color:#5b6478;font-style:italic;"># Dos montañas: ¿se separan inocentes y villanos?</span>
+plt.<span style="color:#9bb4d4;">hist</span>(df[df.villano==<span style="color:#f0a868;">0</span>][<span style="color:#7ee787;">"margen_ford"</span>], color=<span style="color:#7ee787;">"green"</span>, alpha=<span style="color:#f0a868;">0.6</span>)
+plt.<span style="color:#9bb4d4;">hist</span>(df[df.villano==<span style="color:#f0a868;">1</span>][<span style="color:#7ee787;">"margen_ford"</span>], color=<span style="color:#7ee787;">"red"</span>,   alpha=<span style="color:#f0a868;">0.6</span>)
+plt.<span style="color:#9bb4d4;">axvline</span>(umbral, linestyle=<span style="color:#7ee787;">"--"</span>)
+plt.<span style="color:#9bb4d4;">show</span>()</code></pre>
+    </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- ===== CH3 ===== -->
+<section id="ch3" data-chapter="" data-screen-label="Cap 3 · Preprocesamiento" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;">Capítulo 03</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;">Alfred limpia la evidencia</h2>
+      <p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:62ch;margin:0;">Alfred recibe la evidencia desordenada y la <strong style="color:#FFD400;">calibra</strong>: pone cada pista en la misma escala para que ninguna grite más fuerte que las demás solo por sus unidades.</p>
+    </div>
+
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;display:flex;align-items:stretch;gap:clamp(14px,3vw,30px);flex-wrap:wrap;margin:44px 0 34px;">
+      <div style="flex:1;min-width:230px;background:rgba(22,33,62,.4);border:1px solid rgba(229,72,77,.3);border-radius:12px;padding:22px;">
+        <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#E5484D;margin-bottom:16px;">Evidencia cruda</div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#a7afc4;">
+          <div style="display:flex;justify-content:space-between;"><span>Margen Ford</span><span style="color:#e6e6e6;">4 820 mm</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>Peso chasis</span><span style="color:#e6e6e6;">1.9 t</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>Nº sensores</span><span style="color:#e6e6e6;">47</span></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font-size:30px;color:#FFD400;min-width:40px;">→</div>
+      <div style="flex:1;min-width:230px;background:rgba(22,33,62,.55);border:1px solid rgba(62,207,142,.35);border-radius:12px;padding:22px;box-shadow:0 0 30px rgba(62,207,142,.1);">
+        <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#3ECF8E;margin-bottom:16px;">Calibrada · z-score</div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#a7afc4;">
+          <div style="display:flex;justify-content:space-between;"><span>Margen Ford</span><span style="color:#3ECF8E;">+1.24</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>Peso chasis</span><span style="color:#3ECF8E;">−0.83</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>Nº sensores</span><span style="color:#3ECF8E;">+0.05</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;margin-bottom:34px;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;margin-bottom:10px;">Partición: caso de entrenamiento vs. caso de prueba</div>
+      <div style="display:flex;height:46px;border-radius:9px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
+        <div style="flex:3;background:linear-gradient(90deg,rgba(245,197,24,.25),rgba(245,197,24,.12));display:flex;align-items:center;padding-left:18px;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#FFD400;">Train · 75%</div>
+        <div style="flex:1;background:rgba(255,255,255,.04);display:flex;align-items:center;padding-left:14px;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;">Test · 25%</div>
+      </div>
+      <p style="font-size:14px;line-height:1.65;color:#8b92a8;margin:12px 0 0;">El detective estudia con el 75% de los casos y se examina con el 25% que <strong style="color:#e6e6e6;">nunca había visto</strong>. Así sabemos si de verdad aprendió o solo memorizó.</p>
+    </div>
+
+    <sc-if value="{{ showCode }}" hint-placeholder-val="{{ true }}">
+    <div data-reveal="" data-codeblock="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;max-width:780px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);">
+        <span style="width:11px;height:11px;border-radius:50%;background:#E5484D;"></span><span style="width:11px;height:11px;border-radius:50%;background:#FFD400;"></span><span style="width:11px;height:11px;border-radius:50%;background:#3ECF8E;"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5b6478;margin-left:6px;">alfred_limpia.py</span>
+        <button onClick="{{ handleCopy }}" style="margin-left:auto;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:6px 12px;cursor:pointer;transition:all .2s ease;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+      </div>
+      <pre style="margin:0;padding:20px 18px;overflow-x:auto;"><code style="font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.75;color:#cdd6e4;white-space:pre;"><span style="color:#FFD400;">from</span> sklearn.preprocessing <span style="color:#FFD400;">import</span> StandardScaler
+<span style="color:#FFD400;">from</span> sklearn.model_selection <span style="color:#FFD400;">import</span> train_test_split
+
+<span style="color:#5b6478;font-style:italic;"># Separar casos de estudio y de examen</span>
+X_train, X_test, y_train, y_test = <span style="color:#9bb4d4;">train_test_split</span>(
+    X, y, test_size=<span style="color:#f0a868;">0.25</span>, stratify=y, random_state=<span style="color:#f0a868;">42</span>)
+
+<span style="color:#5b6478;font-style:italic;"># Calibrar todo a la misma escala (z-score)</span>
+scaler = <span style="color:#9bb4d4;">StandardScaler</span>()
+X_train = scaler.<span style="color:#9bb4d4;">fit_transform</span>(X_train)
+X_test  = scaler.<span style="color:#9bb4d4;">transform</span>(X_test)</code></pre>
+    </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- ===== CH4 ===== -->
+<section id="ch4" data-chapter="" data-screen-label="Cap 4 · El modelo" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);background:linear-gradient(180deg, transparent, rgba(15,23,41,.45) 50%, transparent);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;">Capítulo 04</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;">Entrenar al detective</h2>
+      <p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:62ch;margin:0;">Un detective novato estudia cientos de casos resueltos hasta aprender el <strong style="color:#FFD400;">patrón</strong> que delata a un villano. El modelo hace lo mismo — y siempre con los mismos cuatro pasos mágicos.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin:46px 0 34px;">
+      <sc-for list="{{ modelSteps }}" as="step" hint-placeholder-count="4">
+        <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:24px 22px;position:relative;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.35);box-shadow:0 0 30px rgba(245,197,24,.14);">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;color:rgba(245,197,24,.4);">{{ step.num }}</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:#FFD400;margin:6px 0 8px;">{{ step.title }}</div>
+          <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9bb4d4;display:block;margin-bottom:10px;">{{ step.code }}</code>
+          <p style="font-size:13.5px;line-height:1.6;color:#a7afc4;margin:0;">{{ step.desc }}</p>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ showCode }}" hint-placeholder-val="{{ true }}">
+    <div data-reveal="" data-codeblock="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;max-width:780px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);">
+        <span style="width:11px;height:11px;border-radius:50%;background:#E5484D;"></span><span style="width:11px;height:11px;border-radius:50%;background:#FFD400;"></span><span style="width:11px;height:11px;border-radius:50%;background:#3ECF8E;"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5b6478;margin-left:6px;">entrenar_detective.py</span>
+        <button onClick="{{ handleCopy }}" style="margin-left:auto;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:6px 12px;cursor:pointer;transition:all .2s ease;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+      </div>
+      <pre style="margin:0;padding:20px 18px;overflow-x:auto;"><code style="font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.75;color:#cdd6e4;white-space:pre;"><span style="color:#FFD400;">from</span> sklearn.linear_model <span style="color:#FFD400;">import</span> LogisticRegression
+<span style="color:#FFD400;">from</span> sklearn.metrics <span style="color:#FFD400;">import</span> classification_report
+
+modelo = <span style="color:#9bb4d4;">LogisticRegression</span>()           <span style="color:#5b6478;font-style:italic;"># 1. Reclutar</span>
+modelo.<span style="color:#9bb4d4;">fit</span>(X_train, y_train)            <span style="color:#5b6478;font-style:italic;"># 2. Entrenar</span>
+y_pred = modelo.<span style="color:#9bb4d4;">predict</span>(X_test)        <span style="color:#5b6478;font-style:italic;"># 3. Predecir</span>
+<span style="color:#9bb4d4;">print</span>(<span style="color:#9bb4d4;">classification_report</span>(y_test, y_pred))  <span style="color:#5b6478;font-style:italic;"># 4. Evaluar</span></code></pre>
+    </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- ===== CH4B — LA LIGA DE DETECTIVES ===== -->
+<section id="ch4b" data-chapter="" data-screen-label="Cap 5 · La Liga de Detectives" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;">Capítulo 05</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;">La Liga de Detectives</h2><p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:64ch;margin:0;">Batman ya no trabaja solo. Recluta una <strong style="color: rgb(255, 212, 0);">liga de detectives</strong>, cada uno con su propio método de atrapar villanos. Pulsa cada expediente para ver cómo opera — luego los comparamos para el caso.</p>
+      
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin:46px 0 40px;align-items:start;">
+
+      <!-- DET 1 — Árbol -->
+      <div data-reveal="" onClick="{{ toggleD1 }}" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:26px;cursor:pointer;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.4);box-shadow:0 0 32px rgba(245,197,24,.16);">
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5b6478;">Detective 01</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,38px);line-height:1;color:#f4f5f8;margin:4px 0 4px;">El Detective de Reglas</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#FFD400;margin-bottom:14px;">Árbol de Decisión</div>
+        <div style="font-size:14px;line-height:1.6;color:#a7afc4;margin-bottom:16px;"><span style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#FFD400;">Superpoder · </span>Interrogatorio de preguntas sí/no encadenadas.</div>
+        <div data-codeblock="" style="display:flex;align-items:center;gap:10px;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#cdd6e4;flex:1;overflow-x:auto;white-space:nowrap;"><span style="color:#9bb4d4;">DecisionTreeClassifier</span>()</code>
+          <button onClick="{{ handleCopy }}" style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 9px;cursor:pointer;flex:none;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+        </div>
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#FFD400;margin-top:14px;">▸ Cómo atrapa villanos</div>
+        <sc-if value="{{ d1open }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:16px;">
+            <p style="font-size:13.5px;line-height:1.65;color:#a7afc4;margin:0 0 16px;">«¿El margen Ford es menor a 0? → sospechoso. ¿La sensibilidad baja de 5.6? → villano confirmado.» Un árbol de preguntas que cualquiera puede seguir. Su gran ventaja: es <strong style="color:#FFD400;">100% explicable</strong> — le puedes mostrar a Ford exactamente por qué condenó a un sensor.</p>
+            <svg viewBox="0 0 280 156" style="width:100%;height:auto;">
+              <line x1="140" y1="34" x2="64" y2="58" stroke="rgba(245,197,24,.5)" stroke-width="2"></line>
+              <line x1="140" y1="34" x2="212" y2="58" stroke="rgba(245,197,24,.5)" stroke-width="2"></line>
+              <line x1="212" y1="84" x2="170" y2="110" stroke="rgba(245,197,24,.5)" stroke-width="2"></line>
+              <line x1="212" y1="84" x2="248" y2="110" stroke="rgba(245,197,24,.5)" stroke-width="2"></line>
+              <rect x="98" y="8" width="84" height="26" rx="7" fill="rgba(245,197,24,.16)" stroke="#FFD400"></rect>
+              <text x="140" y="25" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#FFD400">margen &lt; 0 ?</text>
+              <rect x="18" y="58" width="92" height="26" rx="7" fill="rgba(62,207,142,.14)" stroke="rgba(62,207,142,.55)"></rect>
+              <text x="64" y="75" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#3ECF8E">INOCENTE</text>
+              <rect x="158" y="58" width="108" height="26" rx="7" fill="rgba(245,197,24,.1)" stroke="rgba(245,197,24,.5)"></rect>
+              <text x="212" y="75" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#FFD400">sens &lt; 5.6 ?</text>
+              <rect x="122" y="110" width="92" height="26" rx="7" fill="rgba(62,207,142,.14)" stroke="rgba(62,207,142,.55)"></rect>
+              <text x="168" y="127" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#3ECF8E">INOCENTE</text>
+              <rect x="220" y="110" width="56" height="26" rx="7" fill="rgba(229,72,77,.16)" stroke="rgba(229,72,77,.6)"></rect>
+              <text x="248" y="127" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#E5484D">VILLANO</text>
+            </svg>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- DET 2 — Random Forest -->
+      <div data-reveal="" onClick="{{ toggleD2 }}" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:26px;cursor:pointer;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.4);box-shadow:0 0 32px rgba(245,197,24,.16);">
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5b6478;">Detective 02</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,38px);line-height:1;color:#f4f5f8;margin:4px 0 4px;">El Ejército de Clones</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#FFD400;margin-bottom:14px;">Random Forest</div>
+        <div style="font-size:14px;line-height:1.6;color:#a7afc4;margin-bottom:16px;"><span style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#FFD400;">Superpoder · </span>100 detectives votando por mayoría.</div>
+        <div data-codeblock="" style="display:flex;align-items:center;gap:10px;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#cdd6e4;flex:1;overflow-x:auto;white-space:nowrap;"><span style="color:#9bb4d4;">RandomForestClassifier</span>(n_estimators=<span style="color:#f0a868;">100</span>)</code>
+          <button onClick="{{ handleCopy }}" style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 9px;cursor:pointer;flex:none;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+        </div>
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#FFD400;margin-top:14px;">▸ Cómo atrapa villanos</div>
+        <sc-if value="{{ d2open }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:16px;">
+            <p style="font-size:13.5px;line-height:1.65;color:#a7afc4;margin:0 0 16px;">100 Batmanes de universos paralelos, cada uno vio pistas ligeramente distintas. Para condenar a un sensor, <strong style="color:#FFD400;">votan</strong>. Es difícil de engañar: tendrías que confundir a todos a la vez, no solo a uno.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+              <sc-for list="{{ forestBats }}" as="bat" hint-placeholder-count="30">
+                <svg width="22" height="12" viewBox="0 0 240 124" style="flex:none;"><ellipse cx="120" cy="62" rx="116" ry="56" fill="{{ bat.fill }}"></ellipse><polygon fill="#0a0a0f" points="12,54 46,46 42,34 60,46 80,44 92,48 98,22 106,48 114,42 120,48 126,42 134,48 142,22 148,48 160,44 180,46 198,34 194,46 228,54 200,66 214,90 178,72 190,96 152,76 142,102 130,74 120,86 110,74 98,102 88,76 50,96 62,72 26,90 40,66"></polygon></svg>
+              </sc-for>
+            </div>
+            <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#FFD400;">{{ forestVotes }} / 30 votan: culpable</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- DET 3 — XGBoost -->
+      <div data-reveal="" onClick="{{ toggleD3 }}" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:26px;cursor:pointer;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.4);box-shadow:0 0 32px rgba(245,197,24,.16);">
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5b6478;">Detective 03</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,38px);line-height:1;color:#f4f5f8;margin:4px 0 4px;">El Aprendiz Implacable</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#FFD400;margin-bottom:14px;">XGBoost</div>
+        <div style="font-size:14px;line-height:1.6;color:#a7afc4;margin-bottom:16px;"><span style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#FFD400;">Superpoder · </span>Cada detective corrige los errores del anterior.</div>
+        <div data-codeblock="" style="display:flex;align-items:center;gap:10px;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#cdd6e4;flex:1;overflow-x:auto;white-space:nowrap;"><span style="color:#9bb4d4;">XGBClassifier</span>()</code>
+          <button onClick="{{ handleCopy }}" style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 9px;cursor:pointer;flex:none;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+        </div>
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#FFD400;margin-top:14px;">▸ Cómo atrapa villanos</div>
+        <sc-if value="{{ d3open }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:16px;">
+            <p style="font-size:13.5px;line-height:1.65;color:#a7afc4;margin:0 0 16px;">El detective 2 estudia <strong style="color:#e6e6e6;">solo</strong> los casos que el 1 falló. El 3, los que falló el 2. Un equipo experto en sus propias debilidades. Súper poderoso… pero con pocos datos (462 sensores) puede <strong style="color:#E5484D;">obsesionarse</strong> y memorizar en vez de aprender (overfitting).</p>
+            <div style="display:flex;align-items:flex-end;gap:10px;height:96px;">
+              <sc-for list="{{ xgbSteps }}" as="xs" hint-placeholder-count="4">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#E5484D;">{{ xs.err }}</div>
+                  <div style="width:100%;height:{{ xs.h }};background:linear-gradient(180deg,#E5484D,#a51c20);border-radius:4px 4px 0 0;opacity:.85;"></div>
+                  <div style="font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:#5b6478;text-align:center;">{{ xs.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;margin-top:8px;text-align:center;">El error baja en cada ronda →</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- DET 4 — SVM -->
+      <div data-reveal="" onClick="{{ toggleD4 }}" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:26px;cursor:pointer;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.4);box-shadow:0 0 32px rgba(245,197,24,.16);">
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5b6478;">Detective 04</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,38px);line-height:1;color:#f4f5f8;margin:4px 0 4px;">El Trazador de Fronteras</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#FFD400;margin-bottom:14px;">SVM · Support Vector Machine</div>
+        <div style="font-size:14px;line-height:1.6;color:#a7afc4;margin-bottom:16px;"><span style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#FFD400;">Superpoder · </span>Dibuja la «calle» más ancha entre buenos y malos.</div>
+        <div data-codeblock="" style="display:flex;align-items:center;gap:10px;background:#0d1326;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;">
+          <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#cdd6e4;flex:1;overflow-x:auto;white-space:nowrap;"><span style="color:#9bb4d4;">SVC</span>(kernel=<span style="color:#7ee787;">'rbf'</span>)</code>
+          <button onClick="{{ handleCopy }}" style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:5px 9px;cursor:pointer;flex:none;" style-hover="color:#FFD400;border-color:rgba(245,197,24,.4);">Copiar</button>
+        </div>
+        <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#FFD400;margin-top:14px;">▸ Cómo atrapa villanos</div>
+        <sc-if value="{{ d4open }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:16px;">
+            <p style="font-size:13.5px;line-height:1.65;color:#a7afc4;margin:0 0 16px;">En vez de una línea cualquiera, busca la frontera con el <strong style="color:#FFD400;">mayor margen de seguridad</strong> entre el barrio bueno y el malo de Gotham. Con el «kernel RBF» puede trazar fronteras curvas para separar grupos enredados.</p>
+            <svg viewBox="0 0 280 150" style="width:100%;height:auto;">
+              <polygon points="70,0 110,0 250,150 210,150" fill="rgba(245,197,24,.13)"></polygon>
+              <line x1="90" y1="0" x2="230" y2="150" stroke="#FFD400" stroke-width="2" stroke-dasharray="6 5"></line>
+              <circle cx="30" cy="34" r="7" fill="#3ECF8E"></circle><circle cx="58" cy="62" r="7" fill="#3ECF8E"></circle><circle cx="22" cy="80" r="7" fill="#3ECF8E"></circle><circle cx="74" cy="30" r="7" fill="#3ECF8E"></circle><circle cx="46" cy="104" r="7" fill="#3ECF8E"></circle><circle cx="96" cy="78" r="7" fill="#3ECF8E"></circle><circle cx="36" cy="128" r="7" fill="#3ECF8E"></circle>
+              <circle cx="244" cy="118" r="7" fill="#E5484D"></circle><circle cx="216" cy="92" r="7" fill="#E5484D"></circle><circle cx="254" cy="74" r="7" fill="#E5484D"></circle><circle cx="200" cy="120" r="7" fill="#E5484D"></circle><circle cx="232" cy="140" r="7" fill="#E5484D"></circle><circle cx="186" cy="96" r="7" fill="#E5484D"></circle><circle cx="252" cy="40" r="7" fill="#E5484D"></circle>
+            </svg>
+            <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;margin-top:6px;text-align:center;">La calle más ancha = frontera más segura</div>
+          </div>
+        </sc-if>
+      </div>
+
+    </div>
+
+    <!-- EL VEREDICTO — leaderboard -->
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;margin-bottom:30px;">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(26px,3.4vw,42px);line-height:1;margin:0 0 6px;color:#FFD400;">El veredicto del Batcomputer</h3>
+      <p style="font-size:14.5px;line-height:1.6;color:#8b92a8;margin:0 0 20px;">Caso Yazaki/Ford · 462 sensores · resaltado en amarillo: el elegido.</p>
+      <div style="background:rgba(13,19,38,.7);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#5b6478;">
+          <span>Detective</span><span style="text-align:center;">Accuracy</span><span style="text-align:center;">Recall villanos</span><span style="text-align:center;">Interpretabilidad</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;gap:10px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05);align-items:center;background:rgba(245,197,24,.1);box-shadow:inset 3px 0 0 #FFD400;">
+          <span style="display:flex;flex-direction:column;"><span style="font-family:'Oswald',sans-serif;font-size:15px;color:#FFD400;font-weight:600;">Árbol de Decisión ★</span><span style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;">El Detective de Reglas — Ganador</span></span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#e6e6e6;">89%</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#e6e6e6;">86%</span>
+          <span style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;color:#FFD400;letter-spacing:1px;">★★★★★</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;gap:10px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05);align-items:center;">
+          <span style="font-family:'Oswald',sans-serif;font-size:15px;color:#e6e6e6;">Random Forest</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#a7afc4;">92%</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#a7afc4;">88%</span>
+          <span style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;color:#5b6478;letter-spacing:1px;">★★★☆☆</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;gap:10px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05);align-items:center;">
+          <span style="font-family:'Oswald',sans-serif;font-size:15px;color:#e6e6e6;">XGBoost</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#a7afc4;">93%</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#3ECF8E;">90%</span>
+          <span style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;color:#5b6478;letter-spacing:1px;">★☆☆☆☆</span>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;gap:10px;padding:16px 18px;align-items:center;">
+          <span style="font-family:'Oswald',sans-serif;font-size:15px;color:#e6e6e6;">SVM · kernel RBF</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#a7afc4;">91%</span>
+          <span style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#a7afc4;">85%</span>
+          <span style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;color:#5b6478;letter-spacing:1px;">★★★☆☆</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lección del caso -->
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(245,197,24,.25);border-left:3px solid #FFD400;border-radius:12px;padding:clamp(20px,3vw,30px);">
+      <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#FFD400;margin-bottom:10px;">Lección del caso · lo contraintuitivo</div>
+      <p style="font-size:clamp(15px,1.8vw,18px);line-height:1.7;color:#cdd6e4;margin:0;">Con solo 462 sensores, los detectives más poderosos (XGBoost) <strong style="color:#e6e6e6;">no ganaron automáticamente</strong>. A veces el Árbol simple y explicable es mejor para la industria automotriz: cuando le tienes que responder a Ford, <strong style="color:#FFD400;">la explicabilidad vale más que un 1% extra de precisión</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH5 — INTERACTIVE ===== -->
+<section id="ch5" data-chapter="" data-screen-label="Cap 5 · Umbral (interactivo)" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;">Capítulo 06 · Interactivo</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;">La perilla de paranoia</h2>
+      <p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:64ch;margin:0;">El modelo da una probabilidad; tú decides el <strong style="color:#FFD400;">umbral</strong> para gritar «¡villano!». Gira la perilla y observa el precio de cada decisión <strong style="color:#e6e6e6;">en tiempo real</strong>.</p>
+    </div>
+
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.55);border:1px solid rgba(245,197,24,.22);border-radius:16px;padding:clamp(22px,3.5vw,40px);margin-top:42px;backdrop-filter:blur(5px);box-shadow:0 0 50px rgba(245,197,24,.08);">
+
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+        <span style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#3ECF8E;">😎 Relajado</span>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,46px);color:#FFD400;line-height:1;">{{ paranoia }}<span style="font-size:.5em;">%</span></span>
+        <span style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#E5484D;">Paranoico 🦇</span>
+      </div>
+      <input type="range" min="0" max="100" step="1" value="{{ paranoia }}" onInput="{{ onSlider }}" style="width:100%;accent-color:#FFD400;height:8px;cursor:pointer;margin:6px 0 4px;">
+      <div style="text-align:center;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;margin-bottom:26px;">Modo actual: <span style="color:#FFD400;">{{ modeLabel }}</span></div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:30px;">
+        <div style="background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.3);border-radius:11px;padding:18px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,56px);line-height:1;color:#3ECF8E;">{{ caught }}</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;margin-top:6px;">Villanos atrapados</div>
+        </div>
+        <div style="background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.3);border-radius:11px;padding:18px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,56px);line-height:1;color:#E5484D;">{{ escaped }}</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;margin-top:6px;">Villanos escapados</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:18px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,56px);line-height:1;color:#e6e6e6;">{{ goodRejected }}</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;margin-top:6px;">Inocentes acusados</div>
+        </div>
+        <div style="background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.35);border-radius:11px;padding:18px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,56px);line-height:1;color:#FFD400;">{{ recallPct }}<span style="font-size:.5em;">%</span></div>
+          <div style="font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b92a8;margin-top:6px;">Recall (villanos)</div>
+        </div>
+      </div>
+
+      <!-- Confusion matrix -->
+      <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:center;">
+        <div style="flex:1;min-width:260px;">
+          <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8b92a8;margin-bottom:10px;text-align:center;">Matriz de confusión</div>
+          <div style="display:grid;grid-template-columns:auto 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;font-family:'Oswald',sans-serif;">
+            <div></div>
+            <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5b6478;text-align:center;align-self:end;padding-bottom:4px;">Pred: inocente</div>
+            <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5b6478;text-align:center;align-self:end;padding-bottom:4px;">Pred: villano</div>
+            <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5b6478;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;justify-self:center;align-self:center;">Real villano</div>
+            <div style="background:rgba(229,72,77,.12);border:1px solid rgba(229,72,77,.3);border-radius:8px;padding:14px;text-align:center;"><div style="font-family:'Bebas Neue';font-size:34px;color:#E5484D;line-height:1;">{{ escaped }}</div><div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;margin-top:3px;">escaparon (FN)</div></div>
+            <div style="background:rgba(62,207,142,.12);border:1px solid rgba(62,207,142,.3);border-radius:8px;padding:14px;text-align:center;"><div style="font-family:'Bebas Neue';font-size:34px;color:#3ECF8E;line-height:1;">{{ caught }}</div><div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;margin-top:3px;">atrapados (TP)</div></div>
+            <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5b6478;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;justify-self:center;align-self:center;">Real inocente</div>
+            <div style="background:rgba(62,207,142,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:14px;text-align:center;"><div style="font-family:'Bebas Neue';font-size:34px;color:#e6e6e6;line-height:1;">{{ goodOk }}</div><div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;margin-top:3px;">liberados (TN)</div></div>
+            <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:14px;text-align:center;"><div style="font-family:'Bebas Neue';font-size:34px;color:#e6e6e6;line-height:1;">{{ goodRejected }}</div><div style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b92a8;margin-top:3px;">falsa alarma (FP)</div></div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:240px;border-left:2px solid rgba(245,197,24,.3);padding-left:22px;">
+          <div style="font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:#FFD400;margin-bottom:10px;">El trade-off</div>
+          <p style="font-size:14.5px;line-height:1.7;color:#a7afc4;margin:0;">En control de calidad de la Batmóvil, dejar pasar un sensor defectuoso (un villano) es <strong style="color:#E5484D;">lo peor que puede pasar</strong>. Por eso subimos la paranoia: preferimos revisar de más (falsas alarmas) antes que dejar escapar uno solo. <strong style="color:#e6e6e6;">El recall manda.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH6 ===== -->
+<section id="ch6" data-chapter="" data-screen-label="Cap 6 · Resumen" style="position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;padding:clamp(70px,11vh,130px) clamp(20px,6vw,80px);">
+  <div style="width:100%;max-width:1080px;margin:0 auto;">
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;">
+      <div style="font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:#FFD400;margin-bottom:14px;">Capítulo 07</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(38px,6.5vw,86px);line-height:.95;margin:0 0 22px;color:#f4f5f8;">Expediente cerrado</h2>
+      <p style="font-size:clamp(15px,1.7vw,19px);line-height:1.7;color:#a7afc4;max-width:62ch;margin:0;">El caso está resuelto. Cuatro lecciones que todo detective de datos guarda en el cinturón.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin:46px 0 50px;">
+      <sc-for list="{{ lessons }}" as="lesson" hint-placeholder-count="4">
+        <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;background:rgba(22,33,62,.5);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:26px;transition:opacity .7s ease,transform .7s ease,border-color .3s ease,box-shadow .3s ease;" style-hover="border-color:rgba(245,197,24,.35);box-shadow:0 0 30px rgba(245,197,24,.14);">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#FFD400;line-height:1;margin-bottom:10px;">{{ lesson.num }}</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:17px;letter-spacing:.02em;color:#f4f5f8;margin-bottom:10px;">{{ lesson.title }}</div>
+          <p style="font-size:14.5px;line-height:1.65;color:#a7afc4;margin:0;">{{ lesson.desc }}</p>
+        </div>
+      </sc-for>
+    </div>
+
+    <div data-reveal="" style="opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;text-align:center;position:relative;padding:30px 0;">
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:600px;max-width:90%;height:300px;background:radial-gradient(closest-side,rgba(245,197,24,.1),transparent 70%);pointer-events:none;"></div>
+      <blockquote style="position:relative;font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(28px,4.5vw,56px);line-height:1.05;color:#f4f5f8;margin:0 auto;max-width:20ch;">«Los datos no mienten. Pero hay que saber <span style="color:#FFD400;">interrogarlos</span> en la oscuridad.»</blockquote>
+      <div style="position:relative;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#8b92a8;margin-top:22px;">— Protocolo Batcomputer</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer style="position:relative;z-index:5;border-top:1px solid rgba(255,255,255,.08);padding:40px clamp(20px,6vw,80px);text-align:center;">
+  <svg width="40" height="22" viewBox="0 0 240 124" style="opacity:.5;margin-bottom:14px;"><ellipse cx="120" cy="62" rx="116" ry="56" fill="#FFD400"></ellipse><polygon fill="#0a0a0f" points="12,54 46,46 42,34 60,46 80,44 92,48 98,22 106,48 114,42 120,48 126,42 134,48 142,22 148,48 160,44 180,46 198,34 194,46 228,54 200,66 214,90 178,72 190,96 152,76 142,102 130,74 120,86 110,74 98,102 88,76 50,96 62,72 26,90 40,66"></polygon></svg>
+  <div style="font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8b92a8;">Un proyecto de Machine Learning explicado para Gotham</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showRain&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmósfera&quot;},
+  &quot;showCode&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Contenido&quot;},
+  &quot;defaultParanoia&quot;: {&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Capítulo 5&quot;}
+}">
+class Component extends DCLogic {
+  state = { paranoia: null, openDet: null };
+
+  renderVals() {
+    const p = this.state.paranoia ?? (this.props.defaultParanoia ?? 50);
+    const GOOD = 320, VILL = 142;
+    const f = p / 100;
+    const recall = Math.min(1, 0.42 + 0.55 * Math.pow(f, 0.72));
+    const fpr = Math.min(1, 0.012 + 0.46 * Math.pow(f, 1.95));
+    let caught = Math.round(VILL * recall);
+    caught = Math.max(0, Math.min(VILL, caught));
+    const escaped = VILL - caught;
+    let goodRejected = Math.round(GOOD * fpr);
+    goodRejected = Math.max(0, Math.min(GOOD, goodRejected));
+    const goodOk = GOOD - goodRejected;
+    const recallPct = Math.round((caught / VILL) * 100);
+
+    let modeLabel = "Equilibrado";
+    if (p < 34) modeLabel = "Relajado";
+    else if (p > 66) modeLabel = "Paranoico";
+
+    // Histogram bars (static distributions)
+    const histBars = [];
+    for (let i = 0; i < 16; i++) {
+      const g = Math.exp(-Math.pow(i - 4.6, 2) / (2 * 2.1 * 2.1));
+      const v = Math.exp(-Math.pow(i - 10.9, 2) / (2 * 2.3 * 2.3));
+      histBars.push({ gPx: (Math.round(g * 120) + 2) + "px", vPx: (Math.round(v * 100) + 2) + "px" });
+    }
+
+    // Liga de detectives — army of voting bats (Random Forest)
+    const forestBats = [];
+    for (let i = 0; i < 30; i++) {
+      const on = i % 5 !== 0;
+      forestBats.push({ fill: on ? "#FFD400" : "#2a3048" });
+    }
+    const forestVotes = forestBats.filter((b) => b.fill === "#FFD400").length;
+    const openDet = this.state.openDet;
+
+    return {
+      showRain: this.props.showRain ?? true,
+      showCode: this.props.showCode ?? true,
+      paranoia: p, modeLabel, caught, escaped, goodRejected, goodOk, recallPct,
+      histBars,
+      forestBats, forestVotes,
+      xgbSteps: [
+        { label: "Detective 1", h: "78px", err: "38%" },
+        { label: "Detective 2", h: "52px", err: "22%" },
+        { label: "Detective 3", h: "32px", err: "12%" },
+        { label: "Detective 4", h: "18px", err: "7%" },
+      ],
+      d1open: openDet === 1, d2open: openDet === 2, d3open: openDet === 3, d4open: openDet === 4,
+      toggleD1: () => this.setState((s) => ({ openDet: s.openDet === 1 ? null : 1 })),
+      toggleD2: () => this.setState((s) => ({ openDet: s.openDet === 2 ? null : 2 })),
+      toggleD3: () => this.setState((s) => ({ openDet: s.openDet === 3 ? null : 3 })),
+      toggleD4: () => this.setState((s) => ({ openDet: s.openDet === 4 ? null : 4 })),
+      onSlider: (e) => this.setState({ paranoia: +e.target.value }),
+      handleCopy: (e) => this.handleCopy(e),
+      navItems: [
+        { href: "#hero", label: "Inicio" },
+        { href: "#ch1", label: "El archivo del caso" },
+        { href: "#ch2", label: "Estudiar la escena" },
+        { href: "#ch3", label: "Alfred limpia" },
+        { href: "#ch4", label: "Entrenar al detective" },
+        { href: "#ch4b", label: "La Liga de Detectives" },
+        { href: "#ch5", label: "Perilla de paranoia" },
+        { href: "#ch6", label: "Expediente cerrado" },
+      ],
+      statCards: [
+        { value: 462, label: "Sospechosos", color: "#FFD400" },
+        { value: 320, label: "Inocentes", color: "#3ECF8E" },
+        { value: 142, label: "Villanos", color: "#E5484D" },
+        { value: 16, label: "Pistas (features)", color: "#e6e6e6" },
+      ],
+      modelSteps: [
+        { num: "1", title: "Reclutar", code: "LogisticRegression()", desc: "Elegimos al detective: un modelo aún sin experiencia." },
+        { num: "2", title: "Entrenar", code: ".fit(X, y)", desc: "Estudia los casos resueltos y aprende el patrón del villano." },
+        { num: "3", title: "Predecir", code: ".predict(X)", desc: "Ante un sospechoso nuevo, dicta su veredicto." },
+        { num: "4", title: "Evaluar", code: "classification_report()", desc: "¿Acertó? Medimos su precisión contra la verdad." },
+      ],
+      lessons: [
+        { num: "01", title: "El accuracy no lo es todo", desc: "Con 142 villanos entre 462, un modelo que diga «todos inocentes» acierta el 69%… y deja libres a todos los villanos." },
+        { num: "02", title: "La interpretabilidad importa", desc: "Un modelo que explica POR QUÉ acusó vale más que uno misterioso que acierta un poco más." },
+        { num: "03", title: "Más complejo no es mejor", desc: "Una regresión logística simple, bien calibrada, suele ganarle a un monstruo sobreajustado." },
+        { num: "04", title: "El preprocesamiento es el 80%", desc: "Alfred limpiando la evidencia hace más por el caso que el algoritmo más sofisticado." },
+      ],
+    };
+  }
+
+  handleCopy(e) {
+    const btn = e.currentTarget;
+    const block = btn.closest("[data-codeblock]");
+    if (!block) return;
+    const code = block.querySelector("code");
+    if (!code) return;
+    const txt = code.innerText;
+    try { navigator.clipboard && navigator.clipboard.writeText(txt); } catch (err) {}
+    const old = btn.textContent;
+    btn.textContent = "✓ Copiado";
+    setTimeout(() => { btn.textContent = old; }, 1400);
+  }
+
+  componentDidMount() {
+    requestAnimationFrame(() => this.initScroll());
+  }
+
+  initScroll() {
+    const root = document;
+    const reveals = root.querySelectorAll("[data-reveal]");
+    const rio = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.style.opacity = "1";
+          en.target.style.transform = "none";
+          if (en.target.hasAttribute("data-count")) this.countUp(en.target);
+          rio.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+    reveals.forEach((el) => rio.observe(el));
+
+    const secs = [...root.querySelectorAll("[data-chapter]")];
+    const dots = [...root.querySelectorAll("[data-navdot]")];
+    const labels = [...root.querySelectorAll("[data-navlabel]")];
+    const sio = new IntersectionObserver((entries) => {
+      let best = null, bestR = 0;
+      entries.forEach((en) => {
+        if (en.isIntersecting && en.intersectionRatio > bestR) { bestR = en.intersectionRatio; best = en.target; }
+      });
+      if (best) {
+        const i = secs.indexOf(best);
+        dots.forEach((d, j) => {
+          const on = j === i;
+          d.style.background = on ? "#FFD400" : "rgba(255,255,255,.18)";
+          d.style.transform = on ? "scale(1.55)" : "scale(1)";
+          d.style.boxShadow = on ? "0 0 12px rgba(245,197,24,.7)" : "none";
+          if (labels[j]) { labels[j].style.opacity = on ? "1" : "0"; labels[j].style.transform = on ? "none" : "translateX(6px)"; labels[j].style.color = on ? "#FFD400" : "#8b92a8"; }
+        });
+      }
+    }, { threshold: [0.2, 0.5, 0.8], rootMargin: "-30% 0px -30% 0px" });
+    secs.forEach((s) => sio.observe(s));
+  }
+
+  countUp(el) {
+    if (el.dataset.counted) return;
+    el.dataset.counted = "1";
+    const target = +el.dataset.count;
+    const dur = 1100;
+    const start = performance.now();
+    const step = (now) => {
+      const k = Math.min(1, (now - start) / dur);
+      const v = Math.round(target * (1 - Math.pow(1 - k, 3)));
+      el.textContent = v.toLocaleString("es-ES");
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+}
+</script>
+</body>
+</html>
